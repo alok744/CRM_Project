@@ -1,0 +1,748 @@
+﻿@model IEnumerable<Loginpage_project.Models.m_state>
+@using Loginpage_project.Models
+@{
+    //ViewBag.message = string.IsNullOrWhiteSpace(ViewBag.message.m_country.country_id) ? "Add Country" : "Update Country";
+    //ViewBag.message = ViewBag.message.m_country.country_id ? "Add Country" : "Update Country";
+    Layout = "_Layout";
+}
+
+
+<div class="main-content">
+
+    <div class="page-content">
+        <div class="container-fluid">
+
+            <!-- start page title -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                        <h4 class="mb-sm-0">Status </h4>
+
+                        <div class="page-title-right">
+                            <ol class="breadcrumb m-0">
+                                <li class="breadcrumb-item"><a href="javascript: void(0);">CRM </a></li>
+                                <li class="breadcrumb-item active">Status </li>
+                            </ol>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- end page title -->
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="d-flex align-items-center flex-wrap gap-2">
+                                <div class="flex-grow-1">
+                                    <button class="btn btn-info add-btn" data-bs-toggle="modal" data-bs-target="#showModal"><i class="ri-add-fill me-1 align-bottom"></i> Add State </button>
+                                </div>
+                                <div class="flex-shrink-0">
+                                    <div class="hstack text-nowrap gap-2">
+                                        Show
+                                        <select name="item_count" id="item_count" class="form-control mb-0">
+                                            <option value="5" selected="@(ViewBag.item_count == "5")">5</option>
+                                            <option value="10" selected="@(ViewBag.item_count == "10")">10</option>
+                                            <option value="15" selected="@(ViewBag.item_count == "15")">15</option>
+                                            <option value="20" selected="@(ViewBag.item_count == "20")">20</option>
+                                            <option value="25" selected="@(ViewBag.item_count == "25")">25</option>
+                                            <option value="30" selected="@(ViewBag.item_count == "30")">30</option>
+                                            <option value="35" selected="@(ViewBag.item_count == "35")">35</option>
+                                        </select>entries
+                                    </div>
+                                </div>
+                                @* <div class="flex-shrink-0">
+                                <div class="hstack text-nowrap gap-2">
+                                <button class="btn btn-soft-danger" id="remove-actions" onclick="deleteMultiple()"><i class="ri-delete-bin-2-line"></i></button>
+                                <button class="btn btn-danger"><i class="ri-filter-2-line me-1 align-bottom"></i> Filters </button>
+                                <button class="btn btn-soft-success">Import </button>
+                                <button type="button" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false" class="btn btn-soft-info"><i class="ri-more-2-fill"></i></button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink1">
+                                <li><a class="dropdown-item" href="#">All </a></li>
+                                <li><a class="dropdown-item" href="#">Last Week </a></li>
+                                <li><a class="dropdown-item" href="#">Last Month </a></li>
+                                <li><a class="dropdown-item" href="#">Last Year </a></li>
+                                </ul>
+                                </div>
+                                </div> *@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--end col-->
+                <div class="col-xxl-12">
+                    <div class="card" id="companyList">
+                        <div class="card-header">
+                            @using (Html.BeginForm("search_m_state", "Master", FormMethod.Post))
+                            {
+                                <div class="row g-2">
+                                    <div class="col-md-3">
+                                        <div class="search-box">
+                                            <input type="text" class="form-control search" name="search_item_text" value="@ViewBag.search_item_text" id="search_item_text" placeholder="Search for state..." />
+                                            <i class="ri-search-line search-icon"></i>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-auto ms-auto">
+                                        <div class="d-flex align-items-center gap-2">
+
+                                            <input type="hidden" id="search_item_count" name="search_item_count" class="hidden" value="@(ViewBag.search_item_count)" />
+                                            <input type="hidden" id="search_item_page" name="search_item_page" class="hidden" value="1" />
+                                            <span class="text-muted">
+                                                Sort by:
+                                                <select class="form-control mb-0" data-choices="" data-choices-search-false="" name="search_items_filter" id="search_items_filter" aria-controls="Category_List_Table">
+
+                                                    <option value="all" selected="@(ViewBag.search_items_filter == "all")">All</option>
+                                                    <option value="country_name" selected="@(ViewBag.search_items_filter == "country_name")">Country Name</option>
+                                                    <option value="state_name" selected="@(ViewBag.search_items_filter == "state_name")">State Name</option>
+
+                                                </select>
+                                                @*   :  <input type="search" name="search_item_text" value="@ViewBag.search_item_text" id="search_item_text" class="form-control input-sm" placeholder="Filter By">*@
+                                                <input type="submit" id="search_submit" name="search_submit" value="Search" class="btn btn-sm btn-primary" style="display:none;" />
+                                            </span>
+
+                                            @*  <span class="text-muted">Sort by:  </span>
+                                        <select class="form-control mb-0" data-choices="" data-choices-search-false="" id="choices-single-default">
+                                        <option value="Owner" />Owner
+                                        <option value="Company" />Company
+                                        <option value="location" />Location
+                                        </select> *@
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <div class="card-body">
+                            <div>
+                                <div class="table-responsive table-card mb-3">
+                                    <table class="table align-middle table-nowrap mb-0" id="customerTable">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th scope="col" style="width: 50px;">
+                                                    Sr.No.
+                                                    @* <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="checkAll" value="option" />
+                                                    </div> *@
+                                                </th>
+                                                <th class="sort" data-sort="name" scope="col">Country Name </th>
+                                                <th class="sort" data-sort="name" scope="col">State Name </th>
+
+                                                <th scope="col">Action </th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody class="list form-check-all">
+                                            @{
+                                                var item_count = 0;
+
+                                            }
+                                            @foreach (var item in ViewBag.m_state_list as List<m_state>)
+                                            {
+                                                item_count += 1;
+                                                <tr>
+
+                                                    <th scope="row">
+                                                        @item_count
+
+                                                    </th>
+                                                    <td class="id" style="display:none;"><a href="javascript:void(0);" class="fw-medium link-primary">#VZ001 </a></td>
+                                                    <td>
+                                                        @((ViewBag.country_list as List<m_country>).Where(x => x.country_id == item.country_id && x.del_status == false).FirstOrDefault().country_name)
+                                                    </td>
+                                                    <td>
+                                                        @item.state_name
+                                                    </td>
+
+                                                    <td>
+                                                        <ul class="list-inline hstack gap-2 mb-0">
+
+                                                            <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="View">
+                                                                <a href="#viewModal" data-bs-toggle="modal" class="view-item-btn" id="@item.state_id" onclick="View_icon(@item.state_id)"><i class="ri-eye-fill align-bottom text-muted"></i></a>
+                                                            </li>
+
+                                                            <li class="list-inline-item" data-bs-toggle="tootip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
+                                                                <a class="edit-item-btn" href="#updateModal" data-bs-toggle="modal" onclick="update_m_state_id(@item.state_id)"><i class="ri-pencil-fill align-bottom text-muted"></i></a>
+                                                            </li>
+                                                            <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Delete">
+                                                                <a class="remove-item-btn" data-bs-toggle="modal" href="#deleteRecordModal" id="@item.state_id" onmouseover="set_m_state_id(@item.state_id)">
+                                                                    <i class="ri-delete-bin-fill align-bottom text-muted"></i>
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+
+                                    </table>
+                                    <div class="noresult" style="display: none">
+                                        <div class="text-center">
+                                            <lord-icon src="../../../../cdn.lordicon.com/msoeawqm.json" trigger="loop" colors="primary:#121331,secondary:#08a88a" style="width:75px;height:75px"></lord-icon>
+                                            <h5 class="mt-2">Sorry! No Result Found </h5>
+                                            <p class="text-muted mb-0">We've searched more than 150+ companies We did not ____ any companies for you ______. </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="d-flex justify-content-end mt-3">
+                                    @* <div class="col-sm-5">
+                                    <div class="dataTables_info" id="example1_info" role="status" aria-live="polite">
+                                    Showing @((int.Parse(ViewBag.page_number) - 1) * int.Parse(ViewBag.item_count))
+                                    to @((int.Parse(ViewBag.page_number) * int.Parse(ViewBag.item_count)) < int.Parse(@ViewBag.total_m_country) ? (int.Parse(ViewBag.page_number) * int.Parse(ViewBag.item_count)) : int.Parse(@ViewBag.total_m_country))
+                                    of @ViewBag.total_m_country entries
+                                    </div>
+                                    </div> *@
+                                    <div class="pagination-wrap hstack gap-2">
+                                        <span style="@(ViewBag.page_number == "1" ? "cursor:no-drop;":"")">
+                                            <a class="page-item pagination-prev" href="#" style="@(ViewBag.page_number == "1"? "pointer-events:none":"")" data-dt-idx="prev" tabindex="0" onclick="next_page_prev(@int.Parse(ViewBag.page_number))">Previous</a>
+                                        </span>
+                                        @* <a class="page-item pagination-prev disabled" href="#">
+                                        Previous
+                                        </a> *@
+                                        <ul class="pagination listjs-pagination mb-0">
+                                            @for (int i = 1; i <= int.Parse(ViewBag.page_count); i++)
+                                            {
+                                                @* <ul class="pagination listjs-pagination mb-0 @(i == int.Parse(ViewBag.page_number) ? "active" : "")"><a id="page_button @i" onclick="new_page_click(@i)" tabindex="0">@i</a></ul> *@
+
+                                                <li class="@(i == int.Parse(ViewBag.page_number) ? "active" : "")">
+                                                    <a class="page" data-i="@i" onclick="new_page_click(@i)" tabindex="0">@i</a>
+                                                </li>
+
+                                            }
+                                        </ul>
+                                        @* <ul class="pagination listjs-pagination mb-0"></ul> *@
+                                        <span style="@(int.Parse(ViewBag.page_number) == int.Parse(ViewBag.page_count)? "cursor:no-drop;":"")">
+                                            <a class="page-item pagination-next" href="#" style="@(int.Parse(ViewBag.page_number) == int.Parse(ViewBag.page_count) ? "pointer-events:none":"")" onclick="next_page_click(@int.Parse(ViewBag.page_number))">Next</a>
+                                        </span>
+                                        @* <a class="page-item pagination-next" href="#">
+                                        Next
+                                        </a> *@
+                                    </div>
+                                </div>
+                            </div>
+                            @*  @if (ViewBag.country_id == null)
+                            { *@
+                            <div class="modal fade" id="showModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered modal-lg">
+                                    <div class="modal-content border-0">
+                                        <div class="modal-header bg-info-subtle p-3">
+                                            <h5 class="modal-title" id="exampleModalLabel">State</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close-modal"></button>
+                                        </div>
+
+
+                                        @*  @using (Html.BeginForm("add_m_state", "Master", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                        { *@
+                                        <div class="modal-body">
+
+                                            <div class="row g-3">
+                                                <div class="col-lg-12">
+
+                                                    <div>
+                                                        <label for="country_id" class="form-label">Country Name </label>
+
+                                                        <select class="form-control" asp-items="@ViewBag.listofcountry" id="country_id" name="country_id"></select>
+
+                                                    </div>
+
+                                                    <div>
+                                                        <label for="state_name" class="form-label">State Name </label>
+
+                                                        <input type="text" id="state_name" name="state_name" class="form-control" placeholder="Enter state name" />
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+
+                                        <div class="modal-footer">
+                                            <div class="hstack gap-2 justify-content-end">
+                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close </button>
+                                                <button type="submit" class="btn btn-success" id="add-btn" onclick="add_form()">Add state </button>
+                                                @* <input type="button" id="main_form_submit" value="@(string.IsNullOrWhiteSpace(ViewBag.product_data.product_id)? "Submit" : "Save Changes")" data-toggle="modal" data-target="" class="btn btn-success" onclick="check_form()" /> *@
+                                                <!-- <button type="button" class="btn btn-success" id="edit-btn">Update</button> -->
+                                            </div>
+                                        </div>
+                                        @*  } *@
+
+
+                                    </div>
+                                </div>
+                            </div>
+                            @*  }
+                            else
+                            { *@
+                            <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered modal-lg">
+                                    <div class="modal-content border-0">
+                                        <div class="modal-header bg-info-subtle p-3">
+                                            <h5 class="modal-title" id="exampleModalLabel">State</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close-modal"></button>
+                                        </div>
+
+
+                                        @*  @using (Html.BeginForm("edit_m_state", "Master", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                        { *@
+                                        <div class="modal-body">
+                                            <div class="row g-3">
+                                                <div class="col-lg-12">
+                                                    <input type="hidden" id="state_id_up" name="state_id" class="form-control" value="" />
+
+                                                    <div>
+                                                        <label for="country_name" class="form-label">Country Name </label>
+
+                                                        <select class="form-control" asp-items="@ViewBag.listofcountry" id="country_id_up" name="country_id" value=""></select>
+
+                                                    </div>
+
+                                                    <div>
+                                                        <label for="state_name" class="form-label">State Name </label>
+
+                                                        <input type="text" id="state_name_up" name="state_name" value="" class="form-control" placeholder="Enter state name" />
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+
+                                        <div class="modal-footer">
+                                            <div class="hstack gap-2 justify-content-end">
+                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close </button>
+                                                <button type="submit" class="btn btn-success" id="add-btn" onclick="check_form_update()">Update</button>
+                                                @* <input type="button" id="main_form_submit" value="@(string.IsNullOrWhiteSpace(ViewBag.product_data.product_id)? "Submit" : "Save Changes")" data-toggle="modal" data-target="" class="btn btn-success" onclick="check_form()" /> *@
+                                                <!-- <button type="button" class="btn btn-success" id="edit-btn">Update</button> -->
+                                            </div>
+                                        </div>
+                                        @*   } *@
+
+
+                                    </div>
+                                </div>
+                            </div>
+                            @*   } *@
+                            <!--end add modal-->
+                            @*  @using (Html.BeginForm("delete_m_state", "Master", FormMethod.Post))
+                            { *@
+
+                            @* --Modal for view page-- *@
+
+                            <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="exampleModalLabel" onclick="hide_update()" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered modal-lg">
+                                    <div class="modal-content border-0">
+                                        <div class="modal-header bg-info-subtle p-3">
+                                            <h5 class="modal-title" id="exampleModalLabel">State</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close-modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+
+                                            <div class="row g-3">
+                                                <div class="col-lg-12">
+                                                    <table class="table table-borderless mb-0">
+                                                        <tbody>
+
+                                                            <p class="col-md-">
+                                                                <label class="fw-medium" scope="row">Country Name</label>
+                                                                <label id="view_country_name" style="margin-left:80%;"></label>
+
+                                                                @* <td class="fw-medium" scope="row">Country Name </td>
+                                                                <td  id="view_country_name"> </td> *@
+                                                            </p>
+                                                            <p class="col-md-">
+                                                                <label class="fw-medium" scope="row">State Name</label>
+                                                                <label id="view_state_name" style="margin-left:82%;"></label>
+                                                            </p>
+
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        @* -Modal for delete the page- *@
+
+                        <div>
+                            <div class="modal fade" id="deleteRecordModal" tabindex="-1" aria-labelledby="deleteRecordLabel" aria-hidden="true">
+
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <input type="hidden" id="state_id" name="state_id" />
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="btn-close" id="deleteRecord-close" data-bs-dismiss="modal" aria-label="Close" id="btn-close"></button>
+                                        </div>
+                                        <div class="modal-body p-5 text-center">
+
+                                            <lord-icon src="~/../../../../cdn.lordicon.com/gsqxdxog.json" trigger="loop" colors="primary:#405189,secondary:#f06548" style="width:10px;height:10px"></lord-icon>
+                                            <div class="mt-4 text-center">
+                                                <h4 class="fs-semibold"> Do you really want to delete this detail?</h4>
+                                                @*  <p class="text-muted fs-14 mb-4 pt-1">Deleting your company will ______ all of your information ____ our database. </p> *@
+                                                <div class="hstack gap-2 justify-content-center remove">
+                                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                                                        @* <i class="ri-close-line me-1 align-middle"></i> *@ Close
+                                                    </button>
+                                                    <button type="submit" class="btn btn-danger" id="delete-record" onclick="deleted_data()">Yes, Delete It!! </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @*    } *@
+                        <!--end delete modal -->
+                    </div>
+                </div>
+                <!--end card-->
+            </div>
+        </div>
+        <!--end row-->
+
+    </div>
+    <!-- container-fluid -->
+</div>
+<!-- End Page-content -->
+</div>
+
+
+@*Start Message popup page*@
+
+
+@*End Message popup page*@
+
+@section Scripts
+    {
+    <script>
+
+        //ADD validation.....
+
+        function add_form() {
+            //var c_id = $.trim($("#country_id_up").val());
+            var state_name = $.trim($("#state_name").val());
+            var country_id = $.trim($("#country_id").val());
+
+            if (country_id == "") {
+                alert("Select country name!");
+                return false;
+            }
+            if (state_name == "") {
+                alert("Enter state name!");
+                return false;
+            }
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("add_m_state", "Master")',
+                data: { state_name: state_name, country_id: country_id },
+                // data: formData,
+            }).done(function (res) {
+
+                if (res.value == "invalid_id")
+                    alert('Unable to add detail!');
+
+                if (res.value == "True") {
+                    $('#showModal').modal('hide');
+                    Swal.fire({
+                        text: "Data Inserted Successfully",
+                        icon: "success",
+                        confirmButtonClass: "btn btn-primary w-xs mt-2",
+                        buttonsStyling: !1,
+
+                    }).then((res) => {
+                        // Code to run when the user clicks the "OK" button
+                        if (res.isConfirmed) {
+                            // Redirect the page
+                            window.location.href = '@Url.Action("m_state_list", "Master")';
+                        }
+                    });
+
+
+                }
+
+            });
+
+        }
+
+        // Update Validation.....
+
+
+        function check_form_update() {
+            var st_id = $.trim($("#state_id_up").val());
+            var country_name = $.trim($("#country_id_up").val());
+            var state_name = $.trim($("#state_name_up").val());
+
+            if (country_name == "") {
+                alert("Select country name!")
+                return false;
+            }
+            if (state_name == "") {
+                alert("Enter state name!");
+                return false;
+            }
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("edit_m_state", "Master")',
+                data: { state_id: st_id, country_id: country_name, state_name: state_name },
+                // data: formData,
+            }).done(function (res) {
+
+                if (res.value == "invalid_id")
+                    alert('Unable to add detail!');
+
+                if (res.value == "True") {
+                    $('#updateModal').modal('hide');
+                    Swal.fire({
+                        text: "Data Updated Successfully",
+                        icon: "success",
+                        confirmButtonClass: "btn btn-primary w-xs mt-2",
+                        buttonsStyling: !1,
+
+                    }).then((res) => {
+                        // Code to run when the user clicks the "OK" button
+                        if (res.isConfirmed) {
+                            // Redirect the page
+                            window.location.href = '@Url.Action("m_state_list", "Master")';
+                        }
+                    });
+
+
+                }
+
+            });
+
+        }
+
+        // creating the function for delete button.....
+
+        function deleted_data() {
+
+            var state_id = $.trim($("#state_id").val());
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("delete_m_state", "Master")',
+                data: { state_id: state_id },
+                // data: formData,
+            }).done(function (res) {
+
+                if (res.value == "invalid_id")
+                    alert('Unable to add detail!');
+
+                if (res.value == "True") {
+                    $('#deleteRecordModal').modal('hide');
+                    Swal.fire({
+                        text: "Data Deleted Successfully",
+                        icon: "success",
+                        confirmButtonClass: "btn btn-primary w-xs mt-2",
+                        buttonsStyling: !1,
+
+                    }).then((res) => {
+                        // Code to run when the user clicks the "OK" button
+                        if (res.isConfirmed) {
+                            // Redirect the page
+                            window.location.href = '@Url.Action("m_state_list", "Master")';
+                        }
+                    });
+
+
+                }
+
+            });
+
+        }
+
+
+
+
+
+
+
+
+        // $(document).ready(function () {
+        //     // Attach a submit event handler to the form
+        //     $('#updateModal').submit(function () {
+        //         // Prevent the form from submitting by default
+        //         // event.preventDefault();
+
+        //         // Validation logic
+        //         var state_name = $.trim($("#state_name_up").val());
+        //         var country_name = $.trim($("#country_id_up").val());
+        //         if (country_name == "") {
+        //             alert("Select country name!")
+        //             return false;
+        //         }
+        //         if (state_name == "") {
+        //             alert("Enter state name!");
+        //             return false;
+        //         }
+        //     });
+        // });
+
+
+
+        function set_m_state_id(val) {
+            document.getElementById("state_id").value = val;
+        }
+
+        function update_m_state_id(id) {
+
+            $.ajax({
+                //type: "GET",
+                url: '@Url.Action("edit_m_state", "Master")',
+                data: { id: id },
+            }).done(function (res) {
+
+                if (res.value == "True") {
+
+                    document.getElementById("state_id_up").value = res.state_id;
+                    document.getElementById("country_id_up").value = res.country_list.country_id;
+
+                    document.getElementById("state_name_up").value = res.state_name;
+
+                }
+                if (res.value == "False") {
+                    alert("Value can not be null");
+                }
+
+            });
+
+        }
+
+
+        $("#search_items_filter").change(function () {
+            var selected = document.getElementById("search_items_filter").value;
+            if (selected == "all") {
+                document.getElementById("search_item_text").required = false;
+            }
+            else {
+                document.getElementById("search_item_text").required = true;
+            }
+        });
+
+        $("#item_count").change(function () {
+
+            var value = document.getElementById("item_count").value;
+
+            document.getElementById("search_item_count").value = value;
+
+
+            document.getElementById('search_submit').click();
+            //  document.getElementById('search_item_text').click();
+
+        });
+
+
+
+        @*for next button Start*@
+            function new_page_click(val) {
+
+                var new_value = document.getElementById("item_count").value;
+                // var search_item_count_value = document.getElementById("item_count").value;
+                // var search_item_text_value = document.getElementById("search_item_text").value;
+                // var search_items_filter_value = document.getElementById("search_items_filter").value;
+
+                // alert(search_item_count_value);
+                // alert(search_item_text_value);
+
+                document.getElementById("search_item_count").value = new_value;
+
+                document.getElementById("search_item_page").value = val;
+                //window.location.href = '@Url.Action("search_m_state","Master")';
+                document.getElementById('search_submit').click();
+                // document.getElementById('search_item_text').click();
+
+                // $.ajax({
+                //     //type: "GET",
+                //     url: 'Url.Action("search_m_state", "Master")',
+                //     data: { search_item_page: val, search_item_count: search_item_count_value, search_item_text: search_item_text_value, search_items_filter: search_items_filter_value },
+                // }).done(function (res) {
+
+
+                // });
+
+            }
+
+        function next_page_click(page_count1) {
+
+            var page_actual = 0;
+
+            var next_value = document.getElementById("item_count").value;
+
+            document.getElementById("search_item_count").value = next_value;
+            document.getElementById("search_item_page").value = page_count1 + 1;
+            // document.getElementById('search_submit').click();
+            //document.getElementById('search_item_text').click();
+            document.getElementById('search_submit').click();
+        }
+        @*for next button End*@
+        @*for prev button End*@
+
+            // function next_page_prev(val) {
+            //     alert("hello1");
+            //     var value = document.getElementById("item_count").value;
+
+            //     document.getElementById("search_item_count").value = value;
+            //     document.getElementById("search_item_page").value = val;
+            //     // document.getElementById('search_submit').click();
+            //     document.getElementById('search_item_text').click();
+            // }
+
+            function next_page_prev(page_count1) {
+
+                var page_actual = 0;
+
+
+                var pre_value = document.getElementById("item_count").value;
+
+                document.getElementById("search_item_count").value = pre_value;
+                document.getElementById("search_item_page").value = page_count1 - 1;
+                document.getElementById('search_submit').click();
+                //document.getElementById('search_submit').click();
+            }
+        @*Prev button End*@
+
+            //Creating the function view page...
+
+            function View_icon(id) {
+
+
+                $.ajax({
+                    //type: "GET",
+                    url: '@Url.Action("View_State", "Master")',
+                    data: { id: id },
+                }).done(function (res) {
+
+                    if (res.value == "True") {
+
+                        //document.getElementById("country_id_up").value = res.country_list.country_id;
+                        document.getElementById("view_country_name").innerHTML = res.country_list.country_name;
+                        document.getElementById("view_state_name").innerHTML = res.state_name;
+
+                    }
+
+                });
+
+            }
+
+                // function view_page() {
+
+                //     var modal = new bootstrap.Modal(document.getElementById('viewModal'));
+                //     modal.hide();
+
+
+
+                // }
+
+
+
+
+
+    </script>
+}
