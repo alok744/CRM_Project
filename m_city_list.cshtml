@@ -437,8 +437,40 @@
                         // Code to run when the user clicks the "OK" button
                         if (res.isConfirmed) {
                             // Redirect the page
-                            location.reload();
-                            //window.location.href = '@Url.Action("m_city_list", "Master")';
+                            // $('#showModal').modal('hide');
+                            //window.location.href = 'Url.Action("m_country_list", "Master")';
+                            document.getElementById('state_id').value = '';
+                            document.getElementById('city_name').value = '';
+                            $.ajax({
+                                type: "GET",
+                                url: '@Url.Action("master_city_list", "Master")',
+                                data: "json",
+                            }).done(function (res1) {
+                                alert(res1);
+                                if (res1.value == "True") {
+                                    alert("First");
+
+                                    let gd_con = "";
+                                    let item_count1 = 0;
+
+                                    alert(item_count1);
+                                    $('#customerTable').find('tbody').empty();
+                                    for (var i = 0; i < res1.city_list.length; i++) {
+                                        alert(res1.city_list[i].state_id)
+                                        //alert(res1.state_list[i].state_name)
+                                        item_count1 += 1
+                                        gd_con = "<tr><td>" + item_count1 + "</td><td>" + res1.city_list[i].state_name + "</td><td>" + res1.city_list[i].city_name + "</td><td>" +
+                                            "" + "<a href='#viewModal' data-bs-toggle='modal' class='view-item-btn'  onclick='View_icon(" + res1.city_list[i].city_id + ")' style='margin-right: 16px;'><i class='ri-eye-fill align-bottom text-muted'></i></a>" + "" +
+                                            "" + "<a href='#updateModal' data-bs-toggle='modal' class='edit-item-btn'  onclick='update_m_country_id(" + res1.city_list[i].city_id + ")' style='margin-right: 16px;'><i class='ri-pencil-fill align-bottom text-muted'></i></a>" + "" +
+                                            "" + "<a href='#deleteRecordModal' data-bs-toggle='modal' class='remove-item-btn' onmouseover='set_m_country_id(" + res1.city_list[i].city_id + ")' style='margin-right: 16px;'><i class='ri-delete-bin-fill align-bottom text-muted'></i></a>" + "</td></tr>";
+                                        //alert(gd_con);
+                                        //$('#customerTable').find('tbody').append(gd_con);
+                                        $('#customerTable').find('tbody').append(gd_con);
+
+                                    }
+
+                                }
+                            });
                         }
                     });
 

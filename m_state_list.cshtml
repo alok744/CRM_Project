@@ -448,7 +448,7 @@
                     alert('Unable to add detail!');
 
                 if (res.value == "True") {
-                    $('#showModal').modal('hide');
+                    //$('#showModal').modal('hide');
                     Swal.fire({
                         text: "Data Inserted Successfully",
                         icon: "success",
@@ -457,9 +457,46 @@
 
                     }).then((res) => {
                         // Code to run when the user clicks the "OK" button
+                        //if (res.isConfirmed) {
+                        //    // Redirect the page
+                        //    window.location.href = '@Url.Action("m_state_list", "Master")';
+                        //}
                         if (res.isConfirmed) {
                             // Redirect the page
-                            window.location.href = '@Url.Action("m_state_list", "Master")';
+                            // $('#showModal').modal('hide');
+                            //window.location.href = 'Url.Action("m_country_list", "Master")';
+                            document.getElementById('country_id').value = '';
+                            document.getElementById('state_name').value = '';
+                            $.ajax({
+                                type: "GET",
+                                url: '@Url.Action("master_state_list", "Master")',
+                                data: "json",
+                            }).done(function (res1) {
+                                alert(res1);
+                                if (res1.value == "True") {
+                                    alert("First");
+
+                                    let gd_con = "";
+                                    let item_count1 = 0;
+
+                                    alert(item_count1);
+                                    $('#customerTable').find('tbody').empty();
+                                    for (var i = 0; i < res1.state_list.length; i++) {
+                                        alert(res1.state_list[i].country_id)
+                                        //alert(res1.state_list[i].state_name)
+                                        item_count1 += 1
+                                        gd_con = "<tr><td>" + item_count1 + "</td><td>" + res1.state_list[i].country_name + "</td><td>" + res1.state_list[i].state_name + "</td><td>" +
+                                            "" + "<a href='#viewModal' data-bs-toggle='modal' class='view-item-btn'  onclick='View_icon(" + res1.state_list[i].state_id + ")' style='margin-right: 16px;'><i class='ri-eye-fill align-bottom text-muted'></i></a>" + "" +
+                                            "" + "<a href='#updateModal' data-bs-toggle='modal' class='edit-item-btn'  onclick='update_m_country_id(" + res1.state_list[i].state_id + ")' style='margin-right: 16px;'><i class='ri-pencil-fill align-bottom text-muted'></i></a>" + "" +
+                                            "" + "<a href='#deleteRecordModal' data-bs-toggle='modal' class='remove-item-btn' onmouseover='set_m_country_id(" + res1.state_list[i].state_id + ")' style='margin-right: 16px;'><i class='ri-delete-bin-fill align-bottom text-muted'></i></a>" + "</td></tr>";
+                                        //alert(gd_con);
+                                        //$('#customerTable').find('tbody').append(gd_con);
+                                        $('#customerTable').find('tbody').append(gd_con);                                        
+                                        
+                                    }
+
+                                }
+                            });
                         }
                     });
 
