@@ -13,6 +13,18 @@ namespace Loginpage_project.Controllers
         {
             DB = db;
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult login_page(Loginpage uc)
+        {
+            DB.Add(uc);
+            DB.SaveChanges();
+            ViewBag.message = "The user " + uc.Name + " is saved successfully";
+            return View();
+        }
+
+
         public IActionResult m_country_list()
         {
             List<m_country> m_country_list = TempData["m_country_list"] != null ? JsonConvert.DeserializeObject<List<m_country>>(TempData["m_country_list"] as string) : DB.m_country.Where(x => x.del_status == false).OrderByDescending(x => x.created_date).Take(10).ToList();
@@ -367,10 +379,28 @@ namespace Loginpage_project.Controllers
             //ViewBag.country_list = country_list;
             return View();
         }
+        //public JsonResult master_state_list()
+        //{
+        //    List<m_state> m_state_list = DB.m_state.Where(x => x.del_status == false).OrderByDescending(x => x.created_date).Take(10).ToList();
+        //    return Json(new { success = true, value = "True", state_list = m_state_list});
+        //}
 
-        /// <summary>
-        /// state name search, count, filter, text, page..........
-        /// </summary>
+        public JsonResult master_state_list()
+        {
+            var m_state_list = DB.m_state.Where(x => x.del_status == false).OrderByDescending(x => x.created_date).Take(10)
+                .Select(x => new
+                {
+                    x.state_id,
+                    x.state_name,
+                    x.country_id,
+                    country_name = DB.m_country.FirstOrDefault(c => c.country_id == x.country_id).country_name // Assuming m_country is your country table and it has country_name column
+                })
+                .ToList();
+
+            return Json(new { success = true, value = "True", state_list = m_state_list });
+        }
+
+
 
         public IActionResult search_m_state(string search_item_count, string search_items_filter, string search_item_text, string search_item_page)
         {
@@ -667,6 +697,23 @@ namespace Loginpage_project.Controllers
         /// <summary>
         /// state name search, count, filter, text, page..........
         /// </summary>
+
+        public JsonResult master_city_list()
+        {
+            var m_city_list = DB.m_city.Where(x => x.del_status == false).OrderByDescending(x => x.created_date).Take(10)
+                .Select(x => new
+                {
+                    x.city_id,
+                    x.city_name,
+                    x.state_id,
+                    state_name = DB.m_state.FirstOrDefault(c => c.state_id == x.state_id).state_name // Assuming m_country is your country table and it has country_name column
+                })
+                .ToList();
+
+            return Json(new { success = true, value = "True", city_list = m_city_list });
+        }
+
+
 
         public IActionResult search_m_city(string search_item_count, string search_items_filter, string search_item_text, string search_item_page)
         {
